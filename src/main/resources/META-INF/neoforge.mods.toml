@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "playerwarp"
+version = "1.0.0"
+displayName = "Player Warp Drive"
+description = """
+Adds the Player Warp Drive item. Found as a 1% drop from any mob.
+Hold Ctrl + scroll wheel to select a player, then right-click to teleport to them.
+Grants 5 minutes of invulnerability on use.
+"""
+
+[[dependencies.playerwarp]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "[21.1,)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.playerwarp]]
+    modId = "minecraft"
+    type = "required"
+    versionRange = "[1.21.1,1.22)"
+    ordering = "NONE"
+    side = "BOTH"

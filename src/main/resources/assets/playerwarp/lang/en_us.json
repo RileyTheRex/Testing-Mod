@@ -1,0 +1,7 @@
+{
+    "item.playerwarp.warp_drive": "Player Warp Drive",
+    "playerwarp.hud.select": "Warp target: %s",
+    "playerwarp.hud.no_players": "No other players online",
+    "playerwarp.chat.teleported": "Warped to %s",
+    "playerwarp.chat.no_target": "Hold Ctrl and scroll to select a player first"
+}
