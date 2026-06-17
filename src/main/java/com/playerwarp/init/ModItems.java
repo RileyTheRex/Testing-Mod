@@ -12,7 +12,7 @@ public final class ModItems {
     public static final DeferredItem<WarpDriveItem> WARP_DRIVE = ITEMS.registerItem(
             "warp_drive",
             WarpDriveItem::new,
-            new Item.Properties().stacksTo(1)
+            new Item.Properties().durability(20)
     );
 
     private ModItems() {}

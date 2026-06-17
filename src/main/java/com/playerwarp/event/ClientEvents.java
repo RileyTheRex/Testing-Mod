@@ -1,12 +1,12 @@
 package com.playerwarp.event;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.playerwarp.client.ClientWarpState;
-import com.playerwarp.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -29,6 +29,7 @@ public final class ClientEvents {
         event.setCanceled(true);
         int delta = event.getScrollDeltaY() > 0 ? -1 : 1;
         ClientWarpState.cycle(delta);
+        mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f));
     }
 
     @SubscribeEvent

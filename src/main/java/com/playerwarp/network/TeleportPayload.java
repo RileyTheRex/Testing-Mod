@@ -1,15 +1,23 @@
 package com.playerwarp.network;
 
+import com.playerwarp.item.WarpDriveItem;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+
+import java.util.Set;
 
 public record TeleportPayload(String targetName) implements CustomPacketPayload {
 
@@ -41,18 +49,27 @@ public record TeleportPayload(String targetName) implements CustomPacketPayload 
             } else {
                 sender.teleportTo(target.serverLevel(),
                         target.getX(), target.getY(), target.getZ(),
-                        java.util.Set.of(), sender.getYRot(), sender.getXRot());
+                        Set.of(), sender.getYRot(), sender.getXRot());
             }
 
-            // 5 minutes (6000 ticks) of invulnerability: Resistance V = 100% damage reduction
+            // Teleport sound at destination
+            sender.serverLevel().playSound(null, sender.getX(), sender.getY(), sender.getZ(),
+                    SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.0f);
+
+            // 5 minutes (6000 ticks): Resistance V = 100% damage reduction
             int duration = 6000;
             sender.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, duration, 4, false, true, true));
             sender.addEffect(new MobEffectInstance(MobEffects.REGENERATION, duration, 1, false, true, true));
 
+            // Consume one use of durability
+            ItemStack heldItem = sender.getMainHandItem();
+            if (!heldItem.isEmpty() && heldItem.getItem() instanceof WarpDriveItem) {
+                heldItem.hurtAndBreak(1, sender.serverLevel(), sender,
+                        (item) -> sender.onEquippedItemBroken(item, EquipmentSlot.MAINHAND));
+            }
+
             sender.displayClientMessage(
-                    net.minecraft.network.chat.Component.translatable("playerwarp.chat.teleported", payload.targetName()),
-                    true
-            );
+                    Component.translatable("playerwarp.chat.teleported", payload.targetName()), true);
         });
     }
 }
